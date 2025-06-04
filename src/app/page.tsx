@@ -1,34 +1,28 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BlogCard from '@/components/BlogCard';
 import { BlogPost } from '@/types/blog';
 
-// Mock data - will be replaced with real data later
-const initialPosts: BlogPost[] = [
-  {
-    id: '1',
-    title: 'My First Blog Post',
-    content: 'Creating Blog post app',
-    slug: 'my-first-blog-post',
-    date: '2024-06-01',
-  },
-  {
-    id: '2',
-    title: 'Understanding TypeScript',
-    content: 'TypeScript helps catch errors early in your development process...',
-    slug: 'understanding-typescript',
-    date: '2024-06-02',
-  },
-];
+
 
 export default function HomePage() {
-  const [posts] = useState<BlogPost[]>(initialPosts);
+  const [posts,setPosts] = useState<BlogPost[]>([]);
   const [search, setSearch] = useState('');
 
   const filteredPosts = posts.filter(post => 
     post.title.toLowerCase().includes(search.toLowerCase()) ||
     post.content.toLowerCase().includes(search.toLowerCase())
   );
+
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await fetch('/api/posts');
+      const data = await res.json();
+      setPosts(data);
+    };
+    fetchPosts();
+  }, []);
 
   return (
     <section>
