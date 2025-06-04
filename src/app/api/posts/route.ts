@@ -1,25 +1,25 @@
 import { NextResponse } from 'next/server';
-
-// Temporary in-memory storage
-let posts: any[] = [];
+import { getDB } from '@/database/db';
 
 export async function POST(request: Request) {
-  const newPost = await request.json();
-  
-  // Add simple ID and date
-  const postWithId = {
-    ...newPost,
+  const { title, content } = await request.json();
+  const db = await getDB();
+
+  const newPost = {
     id: Date.now().toString(),
-    date: new Date().toISOString(),
-    slug: newPost.title.toLowerCase().replace(/\s+/g, '-')
+    title,
+    content,
+    slug: title.toLowerCase().replace(/\s+/g, '-'),
+    date: new Date().toISOString()
   };
 
-  posts.unshift(postWithId); // Add to beginning of array
-  
-  return NextResponse.json(postWithId, { status: 201 });
+  db.data!.posts.unshift(newPost);
+  await db.write();
+
+  return NextResponse.json(newPost, { status: 201 });
 }
 
-// Also add GET for later use
 export async function GET() {
-  return NextResponse.json(posts);
+  const db = await getDB();
+  return NextResponse.json(db.data!.posts);
 }
