@@ -12,7 +12,7 @@ A modern, full-featured blog application using the **Next.js App Router**, **Typ
 - **Framework**: Next.js (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Database**: lowdb (JSON-based local storage)
+- **Database**: in-memory db
 - **API**: RESTful API routes (via `/api`)
 
 
@@ -35,7 +35,7 @@ A modern, full-featured blog application using the **Next.js App Router**, **Typ
    - Uses SSR to fetch a new quote from `https://api.quotable.io/random` on every request
 
 6. **API Routes**  
-   - Located in `pages/api/posts/`, they interact with `lowdb` and support full CRUD
+   - Located in /api/posts/`, they interact with db and support full CRUD
 
 ---
 
@@ -78,25 +78,4 @@ Visit: [http://localhost:3000](http://localhost:3000)
 
 🔗 Deployed on Vercel:  
 [https://nextblog.vercel.app](https://next-blog-6b2x67qj8-divyamarora92s-projects.vercel.app/)
-
----
-
-## ⚠️ Important: Vercel API Limitations
-
-> **❌ Note:** API routes using `lowdb` will not work on Vercel because:
->
-> - Vercel’s serverless functions run in **read-only file systems**.
-> - `lowdb` (with `JSONFile`) tries to write to `db.json`, which causes a **500 Internal Server Error** in production.
-
-## 🗃 Data Persistence
-
-Posts are stored in a local `db.json` file using `lowdb`, which mimics a lightweight NoSQL DB. It is loaded and updated via your API handlers in `/api/posts`.
-
----
-
-## 🧪 Extra Features
-
-- Search bar to filter posts by title/content (client-side)
-- Fully responsive layout down to 320px
-- Clean commit history and modular file structure
 
