@@ -1,12 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getDB } from '@/database/db';
+import { BlogPost } from '@/types/blog';
 
+// GET /api/posts/[slug]
 export async function GET(
-  _: Request,
-  { params }: { params: { slug: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const db = await getDB();
-  const post = db.data!.posts.find(p => p.slug === params.slug);
+  const post = db.data?.posts.find((p) => p.slug === slug);
 
   if (!post) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
@@ -15,14 +18,16 @@ export async function GET(
   return NextResponse.json(post);
 }
 
+// DELETE /api/posts/[slug]
 export async function DELETE(
-  _: Request,
-  { params }: { params: { slug: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const db = await getDB();
-  const index = db.data!.posts.findIndex(p => p.slug === params.slug);
+  const index = db.data?.posts.findIndex((p) => p.slug === slug);
 
-  if (index === -1) {
+  if (index === -1 || index === undefined) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
   }
 
@@ -31,22 +36,24 @@ export async function DELETE(
 
   return NextResponse.json(deletedPost);
 }
-export async function PUT(
-  request: Request,
-  { params }: { params: { slug: string } }
-) {
-  const db = await getDB();
-  const { slug } = params;
-  const index = db.data!.posts.findIndex(p => p.slug === slug);
 
-  if (index === -1) {
+// PUT /api/posts/[slug]
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
+  const db = await getDB();
+  const index = db.data?.posts.findIndex((p) => p.slug === slug);
+
+  if (index === -1 || index === undefined) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
   }
 
-  const updatedData = await request.json();
+  const updatedData = await req.json();
   const newSlug = updatedData.title.toLowerCase().replace(/\s+/g, '-');
 
-  const updatedPost = {
+  const updatedPost: BlogPost = {
     ...db.data!.posts[index],
     ...updatedData,
     slug: newSlug,

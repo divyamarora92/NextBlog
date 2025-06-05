@@ -42,7 +42,6 @@ export default function EditPostPage() {
     });
 
     if (res.ok) {
-      const updatedPost = await res.json();
       router.push(`/`);
     } else {
       const errorData = await res.json();
