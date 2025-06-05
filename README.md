@@ -74,10 +74,23 @@ Visit: [http://localhost:3000](http://localhost:3000)
 | DELETE | `/api/posts/[slug]` | Delete a post        |
 
 ---
+## 🌐 Live Demo
+
+🔗 Deployed on Vercel:  
+[https://nextblog.vercel.app](https://next-blog-6b2x67qj8-divyamarora92s-projects.vercel.app/)
+
+---
+
+## ⚠️ Important: Vercel API Limitations
+
+> **❌ Note:** API routes using `lowdb` will not work on Vercel because:
+>
+> - Vercel’s serverless functions run in **read-only file systems**.
+> - `lowdb` (with `JSONFile`) tries to write to `db.json`, which causes a **500 Internal Server Error** in production.
 
 ## 🗃 Data Persistence
 
-Posts are stored in a local `db.json` file using `lowdb`, which mimics a lightweight NoSQL DB. It is loaded and updated via your API handlers in `/pages/api/posts`.
+Posts are stored in a local `db.json` file using `lowdb`, which mimics a lightweight NoSQL DB. It is loaded and updated via your API handlers in `/api/posts`.
 
 ---
 
