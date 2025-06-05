@@ -13,13 +13,12 @@ export async function POST(request: Request) {
     date: new Date().toISOString()
   };
 
-  db.data!.posts.unshift(newPost);
-  await db.write();
+  db.posts.unshift(newPost);
 
   return NextResponse.json(newPost, { status: 201 });
 }
 
 export async function GET() {
   const db = await getDB();
-  return NextResponse.json(db.data!.posts);
+  return NextResponse.json(db.posts);
 }

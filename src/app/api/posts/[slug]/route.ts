@@ -9,7 +9,7 @@ export async function GET(
 ) {
   const { slug } = await params;
   const db = await getDB();
-  const post = db.data?.posts.find((p) => p.slug === slug);
+  const post = db.posts.find((p) => p.slug === slug);
 
   if (!post) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
@@ -25,14 +25,13 @@ export async function DELETE(
 ) {
   const { slug } = await params;
   const db = await getDB();
-  const index = db.data?.posts.findIndex((p) => p.slug === slug);
+  const index = db.posts.findIndex((p) => p.slug === slug);
 
   if (index === -1 || index === undefined) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
   }
 
-  const [deletedPost] = db.data!.posts.splice(index, 1);
-  await db.write();
+  const [deletedPost] = db.posts.splice(index, 1);
 
   return NextResponse.json(deletedPost);
 }
@@ -44,7 +43,7 @@ export async function PUT(
 ) {
   const { slug } = await params;
   const db = await getDB();
-  const index = db.data?.posts.findIndex((p) => p.slug === slug);
+  const index = db.posts.findIndex((p) => p.slug === slug);
 
   if (index === -1 || index === undefined) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
@@ -54,14 +53,13 @@ export async function PUT(
   const newSlug = updatedData.title.toLowerCase().replace(/\s+/g, '-');
 
   const updatedPost: BlogPost = {
-    ...db.data!.posts[index],
+    ...db.posts[index],
     ...updatedData,
     slug: newSlug,
     date: new Date().toISOString(),
   };
 
-  db.data!.posts[index] = updatedPost;
-  await db.write();
-
+  db.posts[index] = updatedPost;
+  
   return NextResponse.json(updatedPost);
 }
